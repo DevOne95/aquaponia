@@ -37,6 +37,8 @@ dependencies:
   sqflite: ^2.3.0
   flutter_bluetooth_serial: ^0.4.0
   get: ^4.6.6
+  flutter_native_splash: ^2.3.2
+  flutter_background_service: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -63,7 +65,7 @@ flutter:
   assets:
     - assets/font/Poppins-Regular.ttf
     - assets/font/Poppins-Bold.ttf
-    - assets/icon/
+    # - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
