@@ -21,20 +21,37 @@ class Dashboard extends StatelessWidget {
         height: double.infinity,
         child: Column(
           children: [
-            Expanded(child: AppLogo()),
-            Expanded(
-                child: SizedBox(
+            SizedBox(
               width: double.infinity,
-              child: Column(
-                children: [
-                  TemperatureDisplay(),
-                  SizedBox(height: 5),
-                  PhLevelDisplay(),
-                  SizedBox(height: 5),
-                  FeederDisplay(),
-                ],
-              ),
-            ))
+              height: 80,
+              child: AppLogo(),
+            ),
+            Expanded(
+                flex: 2,
+                child: SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: FeederDisplay(),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TemperatureDisplay(),
+                            )),
+                            Expanded(
+                                child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: PhLevelDisplay(),
+                            )),
+                          ],
+                        ),
+                      ],
+                    ))),
           ],
         ),
       ),

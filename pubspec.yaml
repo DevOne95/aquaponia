@@ -39,6 +39,7 @@ dependencies:
   get: ^4.6.6
   flutter_native_splash: ^2.3.2
   flutter_background_service: ^5.0.1
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
