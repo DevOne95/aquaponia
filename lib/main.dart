@@ -1,7 +1,10 @@
 import 'package:aquaponia/Database/database.dart';
+import 'package:aquaponia/Feeder/feeder.dart';
 import 'package:aquaponia/Home/dashboard.dart';
 import 'package:aquaponia/Home/home.dart';
 import 'package:aquaponia/Home/home_controller.dart';
+import 'package:aquaponia/PhLevel/phlevel.dart';
+import 'package:aquaponia/Temperature/temperature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
@@ -35,6 +38,9 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => const Home()),
         GetPage(name: '/dashboard', page: () => const Dashboard()),
+        GetPage(name: '/feeder', page: () => const Feeder()),
+        GetPage(name: '/temperature', page: () => const Temperature()),
+        GetPage(name: '/phlevel', page: () => const PhLevel()),
       ],
     );
   }

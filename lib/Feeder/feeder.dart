@@ -5,10 +5,16 @@ class Feeder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: Text('Feeder'),
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+      ),
+      body: const SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Text('Feeder'),
+      ),
     );
   }
 }
