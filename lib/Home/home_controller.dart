@@ -1,19 +1,29 @@
+import 'dart:math';
+
 import 'package:aquaponia/Database/database.dart';
+import 'package:aquaponia/PhLevel/Controller/phlevel_controller.dart';
+import 'package:aquaponia/Temperature/Controller/temperature_controller.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
+  final PhLevelController phLevelController = Get.put(PhLevelController());
+  final TemperatureController temperatureController =
+      Get.put(TemperatureController());
+
+  Random random = Random();
+
   void initializeDatabase() async {
     int result = await DatabaseConfig().insertData({
       'create_at': DateTime.now().toIso8601String(),
-      'temperature_value': 25,
+      'temperature_value': random.nextInt(40) + 1,
     }, 'temperature');
 
     print('Inserted Temperature record ID: $result');
 
     result = await DatabaseConfig().insertData({
       'create_at': DateTime.now().toIso8601String(),
-      'ph_level_value': 35,
-    }, 'phplevel');
+      'ph_level_value': random.nextInt(14) + 1,
+    }, 'phlevel');
 
     print('Inserted PH Level record ID: $result');
 

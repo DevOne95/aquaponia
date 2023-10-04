@@ -1,11 +1,11 @@
 import 'package:aquaponia/Home/home_controller.dart';
-import 'package:aquaponia/Temperature/Model/temperature_model.dart';
+import 'package:aquaponia/PhLevel/Model/Phlevel_model.dart';
 import 'package:aquaponia/Util/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TemperatureHistory extends GetView<HomeController> {
-  const TemperatureHistory({Key? key}) : super(key: key);
+class PhLevelHistory extends GetView<HomeController> {
+  const PhLevelHistory({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class TemperatureHistory extends GetView<HomeController> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text('Temperature',
+                    Text('PH Level',
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600)),
                     SizedBox(
@@ -48,18 +48,17 @@ class TemperatureHistory extends GetView<HomeController> {
                     child: Obx(
                       () => ListView.builder(
                           itemCount: controller
-                              .temperatureController.temperatures.value!.length,
+                              .phLevelController.phLevels.value!.length,
                           itemBuilder: (BuildContext context, int index) {
-                            Temperature model = controller.temperatureController
-                                .temperatures.value![index];
-
+                            PhLevel model = controller
+                                .phLevelController.phLevels.value![index];
                             return Container(
                               width: 100,
                               height: 40,
                               decoration: BoxDecoration(
                                   color: index % 2 == 0
                                       ? Colors.white
-                                      : Colors.grey),
+                                      : Colors.black12),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -68,19 +67,31 @@ class TemperatureHistory extends GetView<HomeController> {
                                     width: 60,
                                     child: Center(
                                       child: Text(
-                                          '${model.value.toString()} C\u00B0',
+                                          '${model.value!.toString()} pH',
                                           style: const TextStyle(fontSize: 15)),
                                     ),
                                   ),
                                   SizedBox(
                                     width: 60,
                                     child: Center(
-                                      child: Text(model.condition(),
-                                          style: const TextStyle(fontSize: 15)),
+                                      child: Text(
+                                          model.value! < 7
+                                              ? 'Acidic'
+                                              : model.value! > 7
+                                                  ? 'Alkaline'
+                                                  : 'Neutral',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: model.value! < 7
+                                                  ? Colors.deepOrange
+                                                  : model.value! > 7
+                                                      ? Colors.purple
+                                                      : Colors.green,
+                                              fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 70,
+                                    width: 80,
                                     child: Text(
                                         DateFormat.withValue(model.date!)
                                             .dateTodayShort(),

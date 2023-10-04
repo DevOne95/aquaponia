@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 class DatabaseConfig {
   static Database? _database;
   static const String temperatureTable = 'temperature';
-  static const String phLevelTable = 'phplevel';
+  static const String phLevelTable = 'phlevel';
   static const String feederTable = 'feeder';
 
   Future<Database> get database async {
@@ -84,5 +84,37 @@ class DatabaseConfig {
     }
 
     return await db.insert(feederTable, row);
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAllData(String table) async {
+    Database db = await database;
+
+    if (table == phLevelTable) {
+      return await db.query(phLevelTable);
+    }
+
+    if (table == temperatureTable) {
+      return await db.query(temperatureTable, orderBy: 'create_at DESC');
+    }
+
+    return await db.query(feederTable);
+  }
+
+  Future<List<Map<String, dynamic>>> getLatestPHLevel(String table) async {
+    Database db = await database;
+
+    if (table == temperatureTable) {
+      return await db.query(
+        temperatureTable,
+        orderBy: 'create_at DESC',
+        limit: 1,
+      );
+    }
+
+    return await db.query(
+      phLevelTable,
+      orderBy: 'create_at DESC',
+      limit: 1,
+    );
   }
 }

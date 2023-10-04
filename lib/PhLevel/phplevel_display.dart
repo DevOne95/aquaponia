@@ -10,7 +10,7 @@ class PhLevelDisplay extends StatelessWidget {
     return InkWell(
       onTap: () => Get.toNamed('/phlevel'),
       child: ModuleNavigation(
-          title: 'Ph Level', value: 7.5.toString(), icon: Icons.touch_app),
+          title: 'pH Level', value: 7.5.toString(), icon: Icons.touch_app),
     );
   }
 }

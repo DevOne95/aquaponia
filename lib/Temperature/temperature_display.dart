@@ -10,7 +10,9 @@ class TemperatureDisplay extends StatelessWidget {
     return InkWell(
       onTap: () => Get.toNamed('/temperature'),
       child: ModuleNavigation(
-          title: "Temperature", value: 45.toString(), icon: Icons.thermostat),
+          title: "Temperature",
+          value: '${45.toString()} C\u00B0',
+          icon: Icons.thermostat),
     );
   }
 }

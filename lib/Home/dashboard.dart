@@ -41,12 +41,12 @@ class Dashboard extends StatelessWidget {
                             Expanded(
                                 child: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: TemperatureDisplay(),
+                              child: PhLevelDisplay(),
                             )),
                             Expanded(
                                 child: Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: PhLevelDisplay(),
+                              child: TemperatureDisplay(),
                             )),
                           ],
                         ),

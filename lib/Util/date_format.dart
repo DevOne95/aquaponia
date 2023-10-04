@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as inlt;
+
 class DateFormat {
   DateTime? _date;
 
@@ -16,8 +18,27 @@ class DateFormat {
     'December'
   ];
 
+  final List<String> _monthShortName = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
   DateFormat() {
     _date = DateTime.now();
+  }
+
+  DateFormat.withValue(DateTime value) {
+    _date = value;
   }
 
   String dateToday() {
@@ -26,6 +47,14 @@ class DateFormat {
     int year = _date!.year;
 
     return '${_monthName[++month]} ${day.toString()}, ${year.toString()}';
+  }
+
+  String dateTodayShort() {
+    int month = _date!.month;
+    int day = _date!.day;
+    int year = _date!.year;
+
+    return '${_monthShortName[++month]} ${day.toString()}, ${year.toString()}';
   }
 
   String get monthOfToday => _monthName[_date!.month];

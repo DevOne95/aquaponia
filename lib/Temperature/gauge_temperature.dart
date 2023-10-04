@@ -1,8 +1,9 @@
+import 'package:aquaponia/Home/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-class GaugeTemperature extends StatelessWidget {
+class GaugeTemperature extends GetView<HomeController> {
   const GaugeTemperature({Key? key}) : super(key: key);
 
   @override
@@ -19,13 +20,13 @@ class GaugeTemperature extends StatelessWidget {
                   cornerStyle: CornerStyle.bothCurve),
               showTicks: false,
               showLabels: false,
-              minimum: 1,
-              maximum: 160,
+              minimum: -40,
+              maximum: 60,
               interval: 10,
               pointers: [
                 RangePointer(
                   color: const Color.fromARGB(255, 40, 62, 2),
-                  value: 45,
+                  value: -25,
                   onValueChanged: (_) {},
                   cornerStyle: CornerStyle.bothCurve,
                   onValueChangeEnd: (value) {},
@@ -35,11 +36,14 @@ class GaugeTemperature extends StatelessWidget {
                   sizeUnit: GaugeSizeUnit.factor,
                 )
               ],
-              annotations: const [
+              annotations: [
                 GaugeAnnotation(
-                  widget: Text(
-                    '45 Temperature C\u00B0',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  widget: Obx(
+                    () => Text(
+                      '${controller.temperatureController.latestTemperature?.value?.value.toString() ?? 77.toString()} Temperature C\u00B0',
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   positionFactor: 0.15,
                 )
