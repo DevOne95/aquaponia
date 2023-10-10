@@ -1,5 +1,6 @@
 import 'package:aquaponia/Database/database.dart';
 import 'package:aquaponia/Feeder/feeder.dart';
+import 'package:aquaponia/Home/Background/background_task.dart';
 import 'package:aquaponia/Home/dashboard.dart';
 import 'package:aquaponia/Home/home.dart';
 import 'package:aquaponia/Home/home_controller.dart';
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeController homeController = Get.put(HomeController());
-    homeController.initializeDatabase();
+    Get.put(HomeController());
+    Get.put(BackgroundFetchController());
 
     return GetMaterialApp(
       title: 'Aquaponia',

@@ -40,7 +40,7 @@ class GaugeTemperature extends GetView<HomeController> {
                 GaugeAnnotation(
                   widget: Obx(
                     () => Text(
-                      '${controller.temperatureController.latestTemperature?.value?.value.toString() ?? 77.toString()} Temperature C\u00B0',
+                      '${controller.temperatureController.latestTemperature?.value?.value.toString() ?? 0.toString()} Temperature C\u00B0',
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.w600),
                     ),

@@ -46,7 +46,7 @@ class DateFormat {
     int day = _date!.day;
     int year = _date!.year;
 
-    return '${_monthName[++month]} ${day.toString()}, ${year.toString()}';
+    return '${_monthName[--month]} ${day.toString()}, ${year.toString()}';
   }
 
   String dateTodayShort() {
@@ -54,7 +54,7 @@ class DateFormat {
     int day = _date!.day;
     int year = _date!.year;
 
-    return '${_monthShortName[++month]} ${day.toString()}, ${year.toString()}';
+    return '${_monthShortName[--month]} ${day.toString()}, ${year.toString()}';
   }
 
   String get monthOfToday => _monthName[_date!.month];
