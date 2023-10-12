@@ -50,6 +50,10 @@ class PhLevelHistory extends GetView<HomeController> {
                           itemCount: controller
                               .phLevelController.phLevels.value!.length,
                           itemBuilder: (BuildContext context, int index) {
+                            if (controller
+                                .phLevelController.phLevels.value!.isEmpty) {
+                              return Container();
+                            }
                             PhLevel model = controller
                                 .phLevelController.phLevels.value![index];
                             return Container(

@@ -50,6 +50,10 @@ class TemperatureHistory extends GetView<HomeController> {
                           itemCount: controller
                               .temperatureController.temperatures.value!.length,
                           itemBuilder: (BuildContext context, int index) {
+                            if (controller.temperatureController.temperatures
+                                .value!.isEmpty) {
+                              return Container();
+                            }
                             Temperature model = controller.temperatureController
                                 .temperatures.value![index];
 

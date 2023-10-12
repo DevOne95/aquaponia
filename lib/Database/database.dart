@@ -6,6 +6,7 @@ class DatabaseConfig {
   static const String temperatureTable = 'temperature';
   static const String phLevelTable = 'phlevel';
   static const String feederTable = 'feeder';
+  static const String feederHistoryTable = 'feederhistory';
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -55,11 +56,22 @@ class DatabaseConfig {
         CREATE TABLE $feederTable(
           id INTEGER PRIMARY KEY,
           time TEXT,
-          week_days INTEGER,
-          week_ends INTEGER,
-          entire_week INTEGER,
-          effective_at DATETIME,
-          end_date DATETIME
+          status INTEGER,
+          date DATETIME
+        )
+      ''');
+    }
+
+    bool tableFeederHistoryExists =
+        await _doesTableExist(db, DatabaseConfig.feederHistoryTable);
+
+    if (!tableFeederHistoryExists) {
+      await db.execute('''
+        CREATE TABLE $feederHistoryTable(
+          id INTEGER PRIMARY KEY,
+          time TEXT,
+          status INTEGER,
+          date DATETIME
         )
       ''');
     }
@@ -83,6 +95,10 @@ class DatabaseConfig {
       return await db.insert(phLevelTable, row);
     }
 
+    if (table == feederHistoryTable) {
+      return await db.insert(feederHistoryTable, row);
+    }
+
     return await db.insert(feederTable, row);
   }
 
@@ -95,6 +111,10 @@ class DatabaseConfig {
 
     if (table == temperatureTable) {
       return await db.query(temperatureTable, orderBy: 'create_at DESC');
+    }
+
+    if (table == feederHistoryTable) {
+      return await db.query(feederHistoryTable, orderBy: 'date DESC');
     }
 
     return await db.query(feederTable);
@@ -111,10 +131,44 @@ class DatabaseConfig {
       );
     }
 
+    if (table == feederHistoryTable) {
+      return await db.query(
+        feederHistoryTable,
+        orderBy: 'date DESC',
+        limit: 1,
+      );
+    }
+
+    if (table == feederTable) {
+      return await db.query(
+        feederTable,
+        orderBy: 'date DESC',
+        limit: 1,
+      );
+    }
+
     return await db.query(
       phLevelTable,
       orderBy: 'create_at DESC',
       limit: 1,
     );
+  }
+
+  Future<void> updateFeederStatus(int id, bool newStatus) async {
+    Database db = await database;
+
+    await db.update(
+      feederTable,
+      {
+        'status': newStatus ? 1 : 0
+      }, // Convert bool to integer (1 for true, 0 for false)
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteFeederSchedule(int id) async {
+    Database db = await database;
+    await db.delete(feederTable, where: 'id = ?', whereArgs: [id]);
   }
 }

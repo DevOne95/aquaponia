@@ -1,12 +1,14 @@
 // import 'dart:math';
 
 // import 'package:aquaponia/Database/database.dart';
+import 'package:aquaponia/Feeder/Controller/feeder_controller.dart';
 import 'package:aquaponia/PhLevel/Controller/phlevel_controller.dart';
 import 'package:aquaponia/Temperature/Controller/temperature_controller.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final PhLevelController phLevelController = Get.put(PhLevelController());
+  final FeederController feederController = Get.put(FeederController());
   final TemperatureController temperatureController =
       Get.put(TemperatureController());
 

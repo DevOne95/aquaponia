@@ -2,6 +2,8 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:aquaponia/Feeder/Model/feeder_model.dart';
+import 'package:intl/intl.dart';
 import 'package:aquaponia/Database/database.dart';
 import 'package:aquaponia/Home/Notification/notification.dart';
 import 'package:get/get.dart';
@@ -34,6 +36,8 @@ class BackgroundFetchController extends GetxController {
           break;
         case 'com.temperature.customtask':
           generateTemperature();
+        case 'com.feeding.customtask':
+          generateFeederRecord();
           break;
         default:
           print("Default fetch task");
@@ -46,22 +50,36 @@ class BackgroundFetchController extends GetxController {
       print("[BackgroundFetch] TIMEOUT taskId: $taskId");
       BackgroundFetch.finish(taskId);
     });
-    BackgroundFetch.scheduleTask(TaskConfig(
-        taskId: "com.phLevel.customtask", delay: 5000 // <-- milliseconds
-        ));
 
-    BackgroundFetch.scheduleTask(TaskConfig(
-        taskId: "com.temperature.customtask", delay: 5000 // <-- milliseconds
-        ));
+    try {
+      Timer.periodic(const Duration(minutes: 1), (timer) async {
+        List<FeederModel> feederModels = await fetchSchedules();
+        DateTime now = DateTime.now();
+        String currentTime = DateFormat('hh:mm a').format(now);
 
-    Timer.periodic(const Duration(minutes: 2), (timer) {
+        for (var feederModel in feederModels) {
+          if (feederModel.time == currentTime) {
+            BackgroundFetch.scheduleTask(TaskConfig(
+              taskId: 'com.feeding.customtask',
+              delay: 2500,
+            ));
+
+            print('Feeding scheduled for ${feederModel.time}');
+          }
+        }
+      });
+    } catch (err) {
+      print(err);
+    }
+
+    Timer.periodic(const Duration(minutes: 1), (timer) {
       // Step 2:  Schedule a custom "oneshot" task "com.transistorsoft.customtask" to execute 5000ms from now.
       BackgroundFetch.scheduleTask(TaskConfig(
-          taskId: "com.phLevel.customtask", delay: 5000 // <-- milliseconds
+          taskId: "com.phLevel.customtask", delay: 2500 // <-- milliseconds
           ));
 
       BackgroundFetch.scheduleTask(TaskConfig(
-          taskId: "com.temperature.customtask", delay: 5000 // <-- milliseconds
+          taskId: "com.temperature.customtask", delay: 2500 // <-- milliseconds
           )); //Fetch data periodically
     });
   }
@@ -77,9 +95,44 @@ class BackgroundFetchController extends GetxController {
         case 'com.temperature.customtask':
           generateTemperature();
           break;
+        case 'com.feeding.customtask':
+          generateFeederRecord();
         default:
           print("Default fetch task");
       }
+
+      try {
+        Timer.periodic(const Duration(minutes: 1), (timer) async {
+          List<FeederModel> feederModels = await fetchSchedules();
+          DateTime now = DateTime.now();
+          String currentTime = DateFormat('hh:mm a').format(now);
+
+          for (var feederModel in feederModels) {
+            if (feederModel.time == currentTime) {
+              BackgroundFetch.scheduleTask(TaskConfig(
+                taskId: 'com.feeding.customtask',
+                delay: 2500,
+              ));
+
+              print('Feeding scheduled for ${feederModel.time}');
+            }
+          }
+        });
+      } catch (err) {
+        print(err);
+      }
+
+      Timer.periodic(const Duration(minutes: 1), (timer) {
+        // Step 2:  Schedule a custom "oneshot" task "com.transistorsoft.customtask" to execute 5000ms from now.
+        BackgroundFetch.scheduleTask(TaskConfig(
+            taskId: "com.phLevel.customtask", delay: 2500 // <-- milliseconds
+            ));
+
+        BackgroundFetch.scheduleTask(TaskConfig(
+            taskId: "com.temperature.customtask",
+            delay: 2500 // <-- milliseconds
+            )); //Fetch data periodically
+      });
     } catch (e) {
       print("Exception occurred: $e");
       Notification notification = Notification();
@@ -93,6 +146,26 @@ class BackgroundFetchController extends GetxController {
 
     // Finish the headless task.
     BackgroundFetch.finish(taskId);
+  }
+
+  Future<List<FeederModel>> fetchSchedules() async {
+    List<Map<String, dynamic>> results =
+        await DatabaseConfig().fetchAllData('feeder');
+
+    List<FeederModel> schedules = [];
+
+    for (var result in results) {
+      FeederModel feederModel = FeederModel(
+        id: result['id'],
+        time: result['time'],
+        status: RxBool(result['status'] == 1),
+        date: DateTime.parse(result['date']),
+      );
+
+      schedules.add(feederModel);
+    }
+
+    return schedules;
   }
 
   void generatepHLevel() async {
@@ -111,13 +184,15 @@ class BackgroundFetchController extends GetxController {
       'create_at': datetime,
     };
 
-    Notification notification = Notification();
-    notification.initialize();
-    notification.showNotification(
-      id: phLevel,
-      title: 'New pH level',
-      body: 'ph Value update $phLevel',
-    );
+    if (phLevel < 7) {
+      Notification notification = Notification();
+      notification.initialize();
+      notification.showNotification(
+        id: phLevel,
+        title: 'New pH level',
+        body: 'Acidic pH level detected $phLevel pH',
+      );
+    }
 
     // Insert the data into the SQLite database
     DatabaseConfig databaseConfig = DatabaseConfig();
@@ -142,17 +217,53 @@ class BackgroundFetchController extends GetxController {
       'create_at': datetime,
     };
 
-    Notification notification = Notification();
-    notification.initialize();
-    notification.showNotification(
-      id: temperature,
-      title: 'New temperature',
-      body: 'Temperature update value $temperature',
-    );
+    if (temperature > 30) {
+      Notification notification = Notification();
+      notification.initialize();
+      notification.showNotification(
+        id: temperature,
+        title: 'New Temperature',
+        body: 'Hot Temperature $temperature C\u00B0',
+      );
+    }
 
     // Insert the data into the SQLite database
     DatabaseConfig databaseConfig = DatabaseConfig();
     int result = await databaseConfig.insertData(row, 'temperature');
+
+    print("Inserted $result row(s) into the database.");
+  }
+
+  void generateFeederRecord() async {
+    // Generate a random number from 1 to 14
+    Random random = Random();
+    int feeder = random.nextInt(99) + 1;
+
+    DateTime now = DateTime.now();
+
+    String formattedTime = DateFormat('hh:mm a').format(now);
+
+    // Get current date and time
+    String datetime = DateTime.now().toIso8601String();
+
+    // Create a row to insert into the database
+    Map<String, dynamic> row = {
+      'time': formattedTime,
+      'status': 1,
+      'date': datetime,
+    };
+
+    Notification notification = Notification();
+    notification.initialize();
+    notification.showNotification(
+      id: feeder,
+      title: 'Feeding time',
+      body: 'feed for today $formattedTime',
+    );
+
+    // Insert the data into the SQLite database
+    DatabaseConfig databaseConfig = DatabaseConfig();
+    int result = await databaseConfig.insertData(row, 'feederhistory');
 
     print("Inserted $result row(s) into the database.");
   }
