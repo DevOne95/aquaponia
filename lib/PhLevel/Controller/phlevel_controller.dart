@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aquaponia/Database/database.dart';
 import 'package:aquaponia/PhLevel/Model/Phlevel_model.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class PhLevelController extends GetxController {
   final String phLevel = 'phlevel';
@@ -87,4 +88,7 @@ class PhLevelController extends GetxController {
       print(err);
     }
   }
+
+  NeedlePointer get phValue => NeedlePointer(
+      value: double.parse(latestPhLevel!.value!.value.toString()));
 }
