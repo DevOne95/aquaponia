@@ -5,21 +5,23 @@ import 'package:aquaponia/Temperature/Model/temperature_model.dart';
 import 'package:get/get.dart';
 
 class TemperatureController extends GetxController {
+  final String temperature = 'temperature';
+  RxInt temperatureFilter = 1.obs;
   Rxn<Temperature>? latestTemperature = Rxn<Temperature>(null).obs();
   Rxn<List<Temperature>> temperatures = Rxn<List<Temperature>>([]).obs();
 
   @override
   void onInit() {
     fetchLatestRecord();
-    fetchPhRecords();
+    fetchRecords();
     Timer.periodic(const Duration(minutes: 1), (timer) {
       fetchLatestRecord();
-      fetchPhRecords(); // Fetch data periodically
+      fetchRecords(); // Fetch data periodically
     });
     super.onInit();
   }
 
-  void fetchPhRecords() async {
+  void fetchRecords() async {
     List<Map<String, dynamic>> results =
         await DatabaseConfig().fetchAllData('temperature');
 
@@ -38,6 +40,29 @@ class TemperatureController extends GetxController {
         date: DateTime.parse(result['create_at']),
       ));
     }
+    temperatures.refresh();
+  }
+
+  void fetchdaysRecords() async {
+    List<Map<String, dynamic>> results = await DatabaseConfig()
+        .getDaysRecord(temperature, temperatureFilter.value == 2 ? 30 : 7);
+
+    int numberOfResults = results.length;
+
+    if (numberOfResults == 0) {
+      return;
+    }
+
+    temperatures.value!.clear();
+
+    for (Map<String, dynamic> result in results) {
+      temperatures.value!.add(Temperature(
+        id: result['id'],
+        value: result['temperature_value'],
+        date: DateTime.parse(result['create_at']),
+      ));
+    }
+
     temperatures.refresh();
   }
 

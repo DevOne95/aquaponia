@@ -32,6 +32,34 @@ class FeederController extends GetxController {
     super.onInit();
   }
 
+  void fetchFeederdaysRecords() async {
+    List<Map<String, dynamic>> results = await DatabaseConfig()
+        .getDaysRecord(history, historyFilter.value == 2 ? 30 : 7);
+
+    int numberOfResults = results.length;
+
+    if (numberOfResults == 0) {
+      return;
+    }
+
+    if (numberOfResults == historyFeed.value!.length) {
+      return;
+    }
+
+    historyFeed.value!.clear();
+
+    for (Map<String, dynamic> result in results) {
+      historyFeed.value!.add(FeederModel(
+        id: result['id'],
+        time: result['time'],
+        status: RxBool(result['status'] == 0),
+        date: DateTime.parse(result['date']),
+      ));
+    }
+
+    historyFeed.refresh();
+  }
+
   void fetchFeederRecords() async {
     List<Map<String, dynamic>> results =
         await DatabaseConfig().fetchAllData(history);

@@ -14,6 +14,69 @@ class TemperatureHistory extends GetView<HomeController> {
         height: double.infinity,
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 18.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Filters',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      MaterialButton(
+                          minWidth: 60,
+                          onPressed: () {
+                            controller.temperatureController.temperatureFilter
+                                .value = 1;
+                            controller.temperatureController.fetchRecords();
+                          },
+                          child: Obx(() => Text(
+                                'All',
+                                style: TextStyle(
+                                    color: controller.temperatureController
+                                                .temperatureFilter.value ==
+                                            1
+                                        ? Colors.blue
+                                        : Colors.black),
+                              ))),
+                      MaterialButton(
+                          minWidth: 60,
+                          onPressed: () {
+                            controller.temperatureController.temperatureFilter
+                                .value = 2;
+                            controller.temperatureController.fetchdaysRecords();
+                          },
+                          child: Obx(() => Text(
+                                '30 days',
+                                style: TextStyle(
+                                    color: controller.temperatureController
+                                                .temperatureFilter.value ==
+                                            2
+                                        ? Colors.blue
+                                        : Colors.black),
+                              ))),
+                      MaterialButton(
+                          minWidth: 60,
+                          onPressed: () {
+                            controller.temperatureController.temperatureFilter
+                                .value = 3;
+                            controller.temperatureController.fetchdaysRecords();
+                          },
+                          child: Obx(() => Text(
+                                '7 days',
+                                style: TextStyle(
+                                    color: controller.temperatureController
+                                                .temperatureFilter.value ==
+                                            3
+                                        ? Colors.blue
+                                        : Colors.black),
+                              ))),
+                    ],
+                  )
+                ],
+              ),
+            ),
             Align(
               alignment: Alignment.topCenter,
               child: SizedBox(

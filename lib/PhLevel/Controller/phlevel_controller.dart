@@ -5,6 +5,9 @@ import 'package:aquaponia/PhLevel/Model/Phlevel_model.dart';
 import 'package:get/get.dart';
 
 class PhLevelController extends GetxController {
+  final String phLevel = 'phlevel';
+  RxInt phlevelFilter = 1.obs;
+
   Rxn<PhLevel>? latestPhLevel = Rxn<PhLevel>(null).obs();
   Rxn<List<PhLevel>> phLevels = Rxn<List<PhLevel>>([]).obs();
 
@@ -17,6 +20,29 @@ class PhLevelController extends GetxController {
       fetchPhRecords(); // Fetch data periodically
     });
     super.onInit();
+  }
+
+  void fetchdaysRecords() async {
+    List<Map<String, dynamic>> results = await DatabaseConfig()
+        .getDaysRecord(phLevel, phlevelFilter.value == 2 ? 30 : 7);
+
+    int numberOfResults = results.length;
+
+    if (numberOfResults == 0) {
+      return;
+    }
+
+    phLevels.value!.clear();
+
+    for (Map<String, dynamic> result in results) {
+      phLevels.value!.add(PhLevel(
+        id: result['id'],
+        value: result['ph_level_value'],
+        date: DateTime.parse(result['create_at']),
+      ));
+    }
+
+    phLevels.refresh();
   }
 
   void fetchPhRecords() async {

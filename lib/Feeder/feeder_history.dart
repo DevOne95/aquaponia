@@ -28,6 +28,7 @@ class FeederHistory extends GetView<HomeController> {
                           minWidth: 60,
                           onPressed: () {
                             controller.feederController.historyFilter.value = 1;
+                            controller.feederController.fetchFeederRecords();
                           },
                           child: Obx(() => Text(
                                 'All',
@@ -42,6 +43,8 @@ class FeederHistory extends GetView<HomeController> {
                           minWidth: 60,
                           onPressed: () {
                             controller.feederController.historyFilter.value = 2;
+                            controller.feederController
+                                .fetchFeederdaysRecords();
                           },
                           child: Obx(() => Text(
                                 '30 days',
@@ -56,6 +59,8 @@ class FeederHistory extends GetView<HomeController> {
                           minWidth: 60,
                           onPressed: () {
                             controller.feederController.historyFilter.value = 3;
+                            controller.feederController
+                                .fetchFeederdaysRecords();
                           },
                           child: Obx(() => Text(
                                 '7 days',

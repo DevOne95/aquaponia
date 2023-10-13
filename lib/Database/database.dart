@@ -154,14 +154,33 @@ class DatabaseConfig {
     );
   }
 
+  Future<List<Map<String, dynamic>>> getDaysRecord(
+      String table, int days) async {
+    Database db = await database;
+    DateTime thirtyDaysAgo = DateTime.now().subtract(Duration(days: days));
+
+    String dateColumn = 'create_at';
+    if (table == feederHistoryTable || table == feederTable) {
+      dateColumn = 'date';
+    }
+
+    List<Map<String, dynamic>> result = await db.query(
+      table,
+      orderBy: '$dateColumn DESC',
+      where: '$dateColumn > ?',
+      whereArgs: [thirtyDaysAgo.toIso8601String()],
+      limit: 1,
+    );
+
+    return result;
+  }
+
   Future<void> updateFeederStatus(int id, bool newStatus) async {
     Database db = await database;
 
     await db.update(
       feederTable,
-      {
-        'status': newStatus ? 1 : 0
-      }, // Convert bool to integer (1 for true, 0 for false)
+      {'status': newStatus ? 1 : 0},
       where: 'id = ?',
       whereArgs: [id],
     );
