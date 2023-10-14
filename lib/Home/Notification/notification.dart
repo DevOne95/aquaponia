@@ -6,7 +6,7 @@ class Notification {
 
   void initialize() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/logo');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(

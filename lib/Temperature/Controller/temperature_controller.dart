@@ -16,7 +16,7 @@ class TemperatureController extends GetxController {
     fetchRecords();
     Timer.periodic(const Duration(minutes: 1), (timer) {
       fetchLatestRecord();
-      fetchRecords(); // Fetch data periodically
+      fetchRecords();
     });
     super.onInit();
   }
