@@ -85,79 +85,85 @@ class TemperatureHistory extends GetView<HomeController> {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
+                    Text('Status',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600)),
                     Text('Temperature',
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.w600)),
-                    SizedBox(
-                      width: 80,
-                      child: Text('Status',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600)),
-                    ),
-                    SizedBox(
-                      width: 60,
-                      child: Text('Date',
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.w600)),
-                    ),
+                    Text('Date',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
             ),
             Expanded(
-                child: SizedBox(
-                    width: Get.width,
-                    height: Get.height,
-                    child: Obx(
-                      () => ListView.builder(
-                          itemCount: controller
-                              .temperatureController.temperatures.value!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (controller.temperatureController.temperatures
-                                .value!.isEmpty) {
-                              return Container();
-                            }
-                            Temperature model = controller.temperatureController
-                                .temperatures.value![index];
+                child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: SizedBox(
+                  width: Get.width,
+                  height: Get.height,
+                  child: Obx(
+                    () => ListView.builder(
+                        itemCount: controller
+                            .temperatureController.temperatures.value!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (controller.temperatureController.temperatures
+                              .value!.isEmpty) {
+                            return SizedBox(
+                              width: Get.width,
+                              height: Get.height,
+                              child: const Center(
+                                child: Text('NO RECORD YET',
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            );
+                          }
 
-                            return Container(
-                              width: 100,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: index % 2 == 0
-                                      ? Colors.white
-                                      : Colors.grey),
+                          Temperature model = controller
+                              .temperatureController.temperatures.value![index];
+
+                          return Container(
+                            width: 100,
+                            height: 40,
+                            decoration: BoxDecoration(
+                                color: index % 2 == 0
+                                    ? Colors.white
+                                    : Colors.grey),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 22.0),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
-                                    width: 60,
+                                      width: 80,
+                                      child: Text(model.condition(),
+                                          style:
+                                              const TextStyle(fontSize: 15))),
+                                  SizedBox(
+                                    width: 70,
                                     child: Center(
                                       child: Text(
                                           '${model.value.toString()} C\u00B0',
                                           style: const TextStyle(fontSize: 15)),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 60,
-                                    child: Center(
-                                      child: Text(model.condition(),
-                                          style: const TextStyle(fontSize: 15)),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 70,
-                                    child: Text(
-                                        DateFormat.withValue(model.date!)
-                                            .dateTodayShort(),
-                                        style: const TextStyle(fontSize: 12)),
-                                  ),
+                                  Text(
+                                      DateFormat.withValue(model.date!)
+                                          .dateTodayShort(),
+                                      style: const TextStyle(fontSize: 12)),
                                 ],
                               ),
-                            );
-                          }),
-                    )))
+                            ),
+                          );
+                        }),
+                  )),
+            ))
           ],
         ));
   }

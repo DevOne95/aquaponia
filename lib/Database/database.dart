@@ -164,13 +164,10 @@ class DatabaseConfig {
       dateColumn = 'date';
     }
 
-    List<Map<String, dynamic>> result = await db.query(
-      table,
-      orderBy: '$dateColumn DESC',
-      where: '$dateColumn > ?',
-      whereArgs: [thirtyDaysAgo.toIso8601String()],
-      limit: 1,
-    );
+    List<Map<String, dynamic>> result = await db.query(table,
+        orderBy: '$dateColumn DESC',
+        where: '$dateColumn > ?',
+        whereArgs: [thirtyDaysAgo.toIso8601String()]);
 
     return result;
   }
