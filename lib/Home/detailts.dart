@@ -32,7 +32,8 @@ class Details extends StatelessWidget {
                 const SizedBox(width: 5),
                 Text(
                   label ?? 'NONE',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontFamily: 'Poppins', fontWeight: FontWeight.w600),
                 ),
               ]),
               Text(description ?? 'NONE',

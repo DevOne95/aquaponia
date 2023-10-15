@@ -1,9 +1,9 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unnecessary_null_comparison
 
 import 'dart:async';
-
 import 'package:aquaponia/Database/database.dart';
 import 'package:aquaponia/Feeder/Model/feeder_model.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +12,8 @@ class FeederController extends GetxController {
   final String feederConfig = 'feeder';
 
   final RxInt historyFilter = 1.obs;
+
+  final RxString timeDuration = 'NONE'.obs;
 
   final TextEditingController timeData = TextEditingController();
 
@@ -28,6 +30,10 @@ class FeederController extends GetxController {
     Timer.periodic(const Duration(milliseconds: 300), (timer) {
       fetchLatestSchedules();
       fetchFeederRecords();
+    });
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      timeDuration.value = retrieveTimeDifference();
+      timeDuration.refresh();
     });
     super.onInit();
   }
@@ -146,5 +152,110 @@ class FeederController extends GetxController {
       print(err);
       return false;
     }
+  }
+
+  String nearAlarm() {
+    if (currentFeederSchedules.value!.isEmpty) {
+      return 'NONE';
+    }
+
+    FeederModel? nearestFeed = retrieveNeerest();
+
+    return nearestFeed != null ? nearestFeed.time! : 'NONE';
+  }
+
+  String retrieveTimeDifference() {
+    if (currentFeederSchedules.value!.isEmpty) {
+      return 'NONE';
+    }
+
+    FeederModel? nearestFeed = retrieveNeerest();
+
+    if (nearestFeed == null) {
+      return 'NONE';
+    }
+
+    Duration duration =
+        calculateTimeDifference(convertTimeStringToDateTime(nearestFeed.time!));
+
+    String hour = duration.inHours == 0
+        ? ''
+        : duration.inHours > 1
+            ? '${duration.inHours} hrs '
+            : '${duration.inHours} hr ';
+
+    String minute = duration.inMinutes % 60 == 0
+        ? ''
+        : duration.inMinutes % 60 > 1
+            ? '${duration.inMinutes % 60} mins '
+            : '${duration.inMinutes % 60} min ';
+
+    return '$hour $minute';
+  }
+
+  FeederModel? retrieveNeerest() {
+    FeederModel? nearestFeed;
+
+    DateTime currentTodayTime = DateTime.now();
+
+    for (var element in currentFeederSchedules.value!) {
+      if (element.status!.value == false) continue;
+
+      DateTime currentElement = convertTimeStringToDateTime(element.time!);
+      if (currentTodayTime.isBefore(currentElement)) {
+        if (nearestFeed == null) {
+          nearestFeed = element;
+          continue;
+        }
+
+        if (currentElement
+            .isBefore(convertTimeStringToDateTime(nearestFeed.time!))) {
+          nearestFeed = element;
+        }
+      }
+    }
+
+    return nearestFeed;
+  }
+
+  DateTime convertTimeStringToDateTime(String timeString) {
+    DateTime currentDate = DateTime.now();
+
+    List<String> parts = timeString.split(":");
+    int hours = int.parse(parts[0]);
+
+    if (timeString.contains("PM") && hours != 12) {
+      hours += 12;
+    }
+
+    int minutes = int.parse(parts[1].split(" ")[0]);
+
+    return DateTime(
+        currentDate.year, currentDate.month, currentDate.day, hours, minutes);
+  }
+
+  String parseStringTimeDifference(String timeString) {
+    Duration duration =
+        calculateTimeDifference(convertTimeStringToDateTime(timeString));
+
+    String hour = duration.inHours == 0
+        ? ''
+        : duration.inHours > 1
+            ? '${duration.inHours} hrs '
+            : '${duration.inHours} hr ';
+
+    String minute = duration.inMinutes % 60 == 0
+        ? ''
+        : duration.inMinutes % 60 > 1
+            ? '${duration.inMinutes % 60} mins '
+            : '${duration.inMinutes % 60} min ';
+
+    return '$hour $minute';
+  }
+
+  Duration calculateTimeDifference(DateTime specifiedTime) {
+    DateTime now = DateTime.now();
+    Duration difference = specifiedTime.difference(now);
+    return difference;
   }
 }

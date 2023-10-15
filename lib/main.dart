@@ -31,6 +31,8 @@ class MyApp extends StatelessWidget {
       title: 'Aquaponia',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primaryColor: const Color(0xFF283E02),
+        fontFamily: 'Poppins',
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 40, 62, 2)),
         useMaterial3: true,

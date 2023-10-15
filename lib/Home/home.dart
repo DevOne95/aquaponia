@@ -64,11 +64,14 @@ class Home extends StatelessWidget {
                 padding: EdgeInsets.all(5),
                 child: Text(
                   'Revolutionize your aquaponics venture with the cutting-edge Aquaponia Monitoring App',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
               Expanded(
-                flex: 8,
+                flex: 10,
                 child: SizedBox(
                   width: double.infinity,
                   height: 450,
@@ -107,6 +110,7 @@ class Home extends StatelessWidget {
                               },
                               child: const Text('Exit',
                                   style: TextStyle(
+                                    fontFamily: 'Poppins',
                                     fontSize: 15,
                                     color: Colors.white,
                                   ))),
@@ -124,6 +128,7 @@ class Home extends StatelessWidget {
                               },
                               child: const Text('Start',
                                   style: TextStyle(
+                                    fontFamily: 'Poppins',
                                     fontSize: 15,
                                     color: Colors.white,
                                   ))),
